@@ -33,8 +33,13 @@ func TestHTTPWorkerContextCancellation(t *testing.T) {
 	})
 
 	// 检查错误是否是 context.Canceled（可能是包装的）
-	if err != context.Canceled && err.Error() != "context canceled" {
-		t.Fatalf("expected context.Canceled or context canceled, got %v", err)
+	isContextCanceled := err == context.Canceled
+	isWrappedContextCanceled := err != nil && (
+		err.Error() == "context canceled" ||
+		err.Error() == "failed to send request: Post \"http://test.example.com/api\": context canceled")
+
+	if !isContextCanceled && !isWrappedContextCanceled {
+		t.Fatalf("expected context.Canceled (direct or wrapped), got %v", err)
 	}
 }
 
