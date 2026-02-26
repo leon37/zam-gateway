@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"zam/core"
@@ -44,6 +45,13 @@ func (w *HTTPWorker) Heartbeat(ctx context.Context) (core.WorkerProfile, error) 
 }
 
 func (w *HTTPWorker) Execute(ctx context.Context, req *core.InferenceRequest, sender func(chunk core.StreamChunk) error) error {
+	traceID, _ := ctx.Value(core.TraceKey).(string)
+	if traceID == "" {
+		traceID = "unknown"
+	}
+
+	log.Printf("[Worker %s] [TraceID: %s] 收到请求，开始物理调用...", w.ID, traceID)
+
 	// 创建请求体
 	requestBody, err := json.Marshal(map[string]interface{}{
 		"model":       req.Model,
