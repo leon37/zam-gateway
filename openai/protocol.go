@@ -1,5 +1,42 @@
 package openai
 
+// ChatCompletionRequest represents a chat completion request
+type ChatCompletionRequest struct {
+	Model       string        `json:"model"`
+	Messages    []Message     `json:"messages"`
+	Temperature float32       `json:"temperature,omitempty"`
+	Stream      bool          `json:"stream,omitempty"`
+	MaxTokens   int           `json:"max_tokens,omitempty"`
+	TopP        float32       `json:"top_p,omitempty"`
+	N           int           `json:"n,omitempty"`
+	Stop        []string      `json:"stop,omitempty"`
+	Frequency   float32       `json:"frequency_penalty,omitempty"`
+	Presence    float32       `json:"presence_penalty,omitempty"`
+}
+
+// ChatCompletionResponse represents a non-streaming chat completion response
+type ChatCompletionResponse struct {
+	ID      string  `json:"id"`
+	Object  string  `json:"object"`
+	Created int64   `json:"created"`
+	Model   string  `json:"model"`
+	Choices []Choice `json:"choices"`
+	Usage   *Usage  `json:"usage,omitempty"`
+}
+
+// Choice represents a choice in non-streaming response
+type Choice struct {
+	Index        int     `json:"index"`
+	Message      Message `json:"message"`
+	FinishReason string  `json:"finish_reason"`
+}
+
+// Message represents a chat message
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
 // ChatCompletionStreamResponse represents an OpenAI SSE streaming response
 type ChatCompletionStreamResponse struct {
 	ID      string                 `json:"id"`
